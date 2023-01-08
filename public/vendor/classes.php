@@ -1,7 +1,5 @@
 <?php
 
-use model\EnviarModel\EnviarModel;
-
 class Classes
 {
 
@@ -39,9 +37,9 @@ class Classes
     }
 
 
-    public static function paginacao(array $paginacao)
+    public static function paginacao($paginacao)
     {
-        switch ($paginacao[0]) {
+        switch ($paginacao) {
 
             case 'registrocompleto':
                 $view = 'view/pages/registrocompleto.php';
@@ -90,10 +88,10 @@ class Classes
 
         $colchete = array('[', ']');
         $parentese   = array('(', ')');
-        $texto    = str_replace('"', '', json_encode($colunas)) . ' values ' . json_encode($valores);
-        $parametros  = str_replace($colchete, $parentese, $texto);
+        $parametros    = str_replace('"', '', json_encode($colunas)) . ' values ' . json_encode($valores);
+        $parametrosNovo  = str_replace($colchete, $parentese, $parametros);
 
-        return $parametros;
+        return $parametrosNovo;
     }
 
 
@@ -112,8 +110,9 @@ class Classes
         $resultado = Classes::connexao([$consulta, 'Query']);
 
         while ($row = Classes::connexao([$resultado[0], 'Fetch'])) {
-            return  $row['coluna'] ?? 'Não encontrado';
+            if (empty($row['coluna']))
+                return 'Não Registrado';
+            return  $row['coluna'];
         }
-
     }
 }

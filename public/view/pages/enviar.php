@@ -64,7 +64,7 @@
       form.append("xml", e.target.result);
 
       $.ajax({
-        url: '../../view/pages/enviarController.php?enviar=true',
+        url: '../../view/pages/upload.php?enviar=true',
         method: 'POST',
         data: form,
         contentType: false,

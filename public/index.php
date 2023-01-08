@@ -1,9 +1,9 @@
 <?php
 
-include('autoload.php');
+include('vendor/autoload.php');
 
 if (isset($_GET["go"])) {
-	Classes::paginacao([$_GET["go"]]);
+	Classes::paginacao($_GET["go"]);
 } else {
 
 ?>

@@ -1,3 +1,4 @@
+
 <div id="form-return">
     <section class="desktop-hidden" style="padding: 40px 0;"> </section>
     <section class="mobile-hidden" style="padding: 20px 0;"> </section>
@@ -11,6 +12,7 @@
         <div class="row">
 
             <?php
+
             $consulta = "SELECT * FROM upload_xml";
             $resultado = Classes::connexao([$consulta, 'Query']);
 
@@ -20,25 +22,28 @@
             while ($row = Classes::connexao([$resultado[0], 'Fetch'])) {
 
             ?>
-                <div class="col-md-3">
-                    <h2 class="text-center ts-name">Número da Nota Fiscal </h2>
-                        <h3 class="text-center text-muted"> <?= $row['chNFe']; ?></h3>
+
+                <div class="col-md-2">
+                    <h2 class="text-center ts-name">#</h2>
+                    <h3 class="text-center text-muted"> <?= $row['id'];?> </h3>
                 </div>
 
+                <div class="col-md-2">
+                    <h2 class="text-center ts-name">Número da Nota Fiscal </h2>
+                    <h3 class="text-center text-muted"> <?= $row['chNFe']; ?></h3>
+                </div>
 
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <h2 class="text-center ts-name">Data da Nota Fiscal </h2>
                     <h3 class="text-center text-muted"> <?= $row['dhRecbto']; ?></h3>
                 </div>
 
-
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <h2 class="text-center ts-name">Valor Total Nota Fiscal </h2>
-                        <h3 class="text-center text-muted">R$ <?= number_format( $row['vNF'], 2, ',', '.'); ?></h3>
+                    <h3 class="text-center text-muted">R$ <?= number_format($row['vNF'], 2, ',', '.'); ?></h3>
                 </div>
 
-
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <h2 class="text-center ts-name">Ver Mais Detalhes</h2>
                     <h3 class="text-center text-muted"> <a href="#" class="nav-link" onclick="loading('?go=registrocompleto&id=<?= $row['id']; ?>', 'conteudo_mostrar');"> Ver +</a> </h3>
                 </div>

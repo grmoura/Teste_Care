@@ -1,26 +1,20 @@
 <?php
 
-include('../../autoload.php');
+include('../../vendor/autoload.php');
 
 
 if (!$_POST['enviar']) {
 
 
-    $arquivo = explode('.', $_FILES['file']['name']);
-    $extensao = end($arquivo);
-    $xml = simplexml_load_string($_POST['xml']);
-
-    // foreach ($xml as $xml) {
-    //     if (!empty($xml))
-    //         exit("123");
-    //         break;
-    // }
+    $extensao = explode('.', $_FILES['file']['name'])[1];
 
     if (empty($_FILES['file']['name']))
         exit("Selecione um arquivo para enviar.");
     if ($extensao != 'xml')
-        exit("Formato inv&aacute;lido.<br />O arquivo deve estar no formato <strong>XML</strong>.");
+        exit("Formato inválido.<br/>O arquivo deve estar no formato <strong>XML</strong>.");
 
+
+    $xml = simplexml_load_string($_POST['xml']);
 
 
     foreach ($xml->NFe->infNFe->emit as $emit) {
