@@ -1,21 +1,23 @@
 <?php
 
+use model\EnviarModel\EnviarModel;
 
 class Classes
 {
 
-    public static function connect(array $consulta)
+    public static function connexao(array $consulta)
     {
         try {
 
-            $con = new PDO('mysql:host=mariaDB;dbname=teste', 'root', '654321');
+            $con = new PDO('mysql:host=mariaDB;dbname=testeCare', 'root', '654321');
             $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             if ($consulta[1] == "Query") {
 
-                    $stmt = $con->prepare($consulta[0]);
 
-                    $stmt->execute();
+                $stmt = $con->prepare($consulta[0]);
+
+                $stmt->execute();
 
                 return array($stmt, $con->lastInsertId());
             }
@@ -32,82 +34,86 @@ class Classes
             }
         } catch (PDOException $e) {
 
-            exit('Não foi possível conectar com banco de dados! <br>Erro: '.$e->getMessage());
+            exit('Não foi possível conectar com banco de dados! <br>Erro: ' . $e->getMessage());
         }
     }
 
 
-
-
-    public function extendsRequest(array $arrayRequest)
+    public static function paginacao(array $paginacao)
     {
-        $var = $arrayRequest[1];
-        $type = $arrayRequest[0];
+        switch ($paginacao[0]) {
 
+            case 'registrocompleto':
+                $view = 'view/pages/registrocompleto.php';
+                break;
 
-        if ($type == 'requiredVarString') {
+            case 'registros':
+                $view = 'view/pages/registros.php';
+                break;
 
-            for ($i = 1; $i <= $var[0]; $i++) {
-                if (preg_match('/^[a-zA-Z0-9\_\,\.\@\-\d]+$/', $var[$i]) == 0) {
-                    return 0;
-                }
-            }
-            return 1;
+            case 'enviar':
+                $view = 'view/pages/enviar.php';
+                break;
+
+            default:
+                $view = 'view/pages/404.php';
         }
 
-        if ($type == 'requiredVarStringAll') {
-
-            for ($i = 1; $i <= $var[0]; $i++) {
-                if (preg_match('/^[a-zA-Z0-9\_\ \,\.\@\-\d]+$/', $var[$i]) == 0) {
-                    return array(0, $var[$i + 1]);
-                }
-            }
-            return array(1);
-        }
-
-        if ($type == 'emptyVarStringAll') {
-
-            for ($i = 1; $i <= $var[0]; $i++) {
-                if ($var[$i] == "") {
-                    return array(0, $var[$i + 1]);
-                }
-            }
-            return array(1);
-        }
-
-        if ($type == 'requiredVarNumb') {
-
-            for ($i = 1; $i <= $var[0]; $i++) {
-                if (!is_numeric($var[$i])) {
-                    return 0;
-                }
-            }
-            return 1;
-        }
-
-        if ($type == 'requiredVarLetNumb') {
-
-            if (preg_match('/^[a-zA-Z0-9 ]+$/', $var) == 0) {
-                return 0;
-            }
-
-            return 1;
-        }
-
-
-        if ($type == 'removedAccents') {
-            return preg_replace(array("/(á|à|ã|â|ä)/", "/(Á|À|Ã|Â|Ä)/", "/(é|è|ê|ë)/", "/(É|È|Ê|Ë)/", "/(í|ì|î|ï)/", "/(Í|Ì|Î|Ï)/", "/(ó|ò|õ|ô|ö)/", "/(Ó|Ò|Õ|Ô|Ö)/", "/(ú|ù|û|ü)/", "/(Ú|Ù|Û|Ü)/", "/(ñ)/", "/(Ñ)/", "/(ç)/", "/(Ç)/"), explode(" ", "a A e E i I o O u U n N c C"), $var);
-        }
-
-        if ($type == 'removedString') {
-            return preg_replace('/[^0-9]/', '', $var);
-        }
-
-        if ($type == 'antInject') {
-            $x = preg_replace("/(from|INSERT|DROP|DELETE|update|UPDATE|select|insert|delete|where|drop table|show tables|#|'|\"|@|\*|--|\\\\)/", '', $var);
-            return $x;
+        if (file_exists($view)) {
+            include($view);
+            exit();
         }
     }
 
 
+    public static function uploadXML($extensao)
+    {
+
+        $novoNome = rand(100, 999) . '.' . $extensao;
+        if (file_exists("uploads/$novoNome")) {
+            return Classes::uploadXML($extensao);
+        } else {
+            move_uploaded_file($_FILES['file']['tmp_name'], 'uploads/' . $novoNome);
+            return  'uploads/' . $novoNome;
+        }
+    }
+
+
+    public static function formatarInsertMysql(array $dados)
+    {
+
+        foreach ($dados as $chave => $valor) {
+
+            $colunas[] = $chave;
+            $valores[] = $valor;
+        }
+
+        $colchete = array('[', ']');
+        $parentese   = array('(', ')');
+        $texto    = str_replace('"', '', json_encode($colunas)) . ' values ' . json_encode($valores);
+        $parametros  = str_replace($colchete, $parentese, $texto);
+
+        return $parametros;
+    }
+
+
+    public static function inserirRegistro(array $dados)
+    {
+        $dadosFormatado = Classes::formatarInsertMysql($dados[1]);
+        $consulta =  "INSERT INTO $dados[0] $dadosFormatado";
+        $id = Classes::connexao([$consulta, 'Query']);
+        return $id[1];
+    }
+
+
+    public static function buscarRegistros(array $dados)
+    {
+        $consulta = "SELECT $dados[3] as coluna FROM $dados[0] where  $dados[1]='$dados[2]' ";
+        $resultado = Classes::connexao([$consulta, 'Query']);
+
+        while ($row = Classes::connexao([$resultado[0], 'Fetch'])) {
+            return  $row['coluna'] ?? 'Não encontrado';
+        }
+
+    }
 }
