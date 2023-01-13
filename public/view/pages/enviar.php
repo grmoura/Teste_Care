@@ -50,11 +50,9 @@
 
 <script type="text/javascript">
   $("#xmlForm").submit(function(event) {
-    event.preventDefault();
+    //event.preventDefault();
     var selectedFile = document.getElementById('xmlArquivo').files[0];
 
-
-    console.log(selectedFile.name.split(".")[1]);
     if (selectedFile == undefined) {
       $('#form-return-error').html("Selecione um arquivo para enviar.");
     } else if (selectedFile.name.split(".")[1] != 'xml') {
