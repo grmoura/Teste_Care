@@ -54,38 +54,42 @@
     var selectedFile = document.getElementById('xmlArquivo').files[0];
 
 
-    if(selectedFile == undefined){
+    console.log(selectedFile.name.split(".")[1]);
+    if (selectedFile == undefined) {
       $('#form-return-error').html("Selecione um arquivo para enviar.");
-    }else{
+    } else if (selectedFile.name.split(".")[1] != 'xml') {
+      $('#form-return-error').html('Formato inválido.<br/>O arquivo deve estar no formato <strong>XML</strong>.');
+    } else {
 
-    var form = new FormData();
-    var reader = new FileReader();
-    reader.onload = function(e) {
+      var form = new FormData();
+      var reader = new FileReader();
+      reader.onload = function(e) {
 
-      form.append("file", selectedFile);
-      form.append("xml", e.target.result);
+        form.append("file", selectedFile);
+        form.append("xml", e.target.result);
 
-      $.ajax({
-        url: '../../view/pages/upload.php?enviar=true',
-        method: 'POST',
-        data: form,
-        contentType: false,
-        cache: false,
-        processData: false,
-        beforeSend: function() {
-          $('#form-return-error').html("<center><img src='view/images/loading.gif' alt='' style='padding: 50px 0;' /></center>");
-        },
-        success: function(data) {
-     
-          $('#form-return-error').html(data);
-        }
-      });
+        $.ajax({
+          url: '../../view/pages/upload.php?enviar=true',
+          method: 'POST',
+          data: form,
+          contentType: false,
+          cache: false,
+          processData: false,
+          beforeSend: function() {
 
-    };
+            $('#form-return-error').html("<center><img src='view/images/loading.gif' alt='' style='padding: 50px 0;' /></center>");
+          },
+          success: function(data, status) {
+
+            $('#form-return-error').html(data);
+          }
+        });
+
+      };
 
 
-    reader.readAsText(selectedFile);
-  }
+      reader.readAsText(selectedFile);
+    }
 
 
   });

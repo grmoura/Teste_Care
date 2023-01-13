@@ -8,12 +8,6 @@ if (!$_POST['enviar']) {
 
     $extensao = explode('.', $_FILES['file']['name'])[1];
 
-    if (empty($_FILES['file']['name']))
-        exit("Selecione um arquivo para enviar.");
-    if ($extensao != 'xml')
-        exit("Formato inválido.<br/>O arquivo deve estar no formato <strong>XML</strong>.");
-
-
     $xml = simplexml_load_string($_POST['xml']);
 
 
