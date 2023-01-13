@@ -102,19 +102,19 @@ ALTER TABLE `upload_xml`
 -- AUTO_INCREMENT de tabela `dest_xml`
 --
 ALTER TABLE `dest_xml`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 
 --
 -- AUTO_INCREMENT de tabela `enderDest_xml`
 --
 ALTER TABLE `enderDest_xml`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 
 --
 -- AUTO_INCREMENT de tabela `upload_xml`
 --
 ALTER TABLE `upload_xml`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;
 
 --
 -- Restrições para despejos de tabelas
